@@ -27,7 +27,8 @@ install_virtualbox(){
 }
 
 install_virtualbox_tools(){
-    print_status "Installing Oracle VirtualBox tools"
+    print_status "Installing Oracle VirtualBox Guest Addons"
+    apt-get update -y && apt-get install virtualbox-guest-additions-iso virtualbox-guest-utils virtualbox-ext-pack
 }
 
 install_vmware_tools(){
@@ -101,26 +102,33 @@ install_vm_host(){
     fi
 }
 
+
 install_vm_tools(){
     # TODO: Get VM type
-    dmi=`dmidecode | awk '/VMware Virtual Platform/ {print $3}'`
+    dmi=`dmidecode | grep -A3 '^System Information' | awk ' /Product Name/ {print $3} '`
     if [[ "$dmi" ==  *VMware* ]]; then
         if ask "It seems you're running kali as VMWare guest, do you want to install vmware-tools?" Y; then
             install_vmware_tools
         fi
+    elif [[ "$dmi" ==  *VirtualBox* ]]; then
+        if ask "It seems you're running kali as Virltualbox guest, do you want to install Virtualbox Guest Addons?" Y; then
+            install_virtualbox_tools
+        fi
     fi
-
-    install_virtualbox_tools
 }
+    
 
 install_vm(){
     # # http://www.dmo.ca/blog/detecting-virtualization-on-linux/
     install_vm_tools
+}
 
 
-    install_vm_host
-#    install_parallels_tools
-#    apt-get install virt-what
+install_vm_host(){
+
+    install_parallels_tools
+    
+}
 
 #VMWare
 #dmidecode | awk '/VMware Virtual Platform/ {print $3,$4,$5}'
@@ -128,7 +136,8 @@ install_vm(){
 #You could run lspci | grep VirtualBox.
 #You could also run lsusb and check the string 'VirtualBox'. Such as lsusb | grep VirtualBox.
 #Also dmesg works, run dmesg | grep VirtualBox or dmesg | grep virtual.
-}
+#dmidecode | grep -A3 '^System Information' | awk ' /Product Name/ {print $3} '  - pulls Virtual
+
 
 if [ "${0##*/}" = "vm.sh" ]; then
     install_vm

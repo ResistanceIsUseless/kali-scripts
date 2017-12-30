@@ -22,6 +22,15 @@ install_common_tools(){
     apt-get install -y terminator tmux htop iftop iotop mc screen curl wget git
 }
 
+install_cherrytree(){
+    apt-get install python-gtksourceview2 -y
+    if ask "Do you want to install CherryTree?" Y; then
+	 git clone https://github.com/giuspen/cherrytree.git /usr/bin/cherrytree
+	 
+        fi
+    fi
+}
+
 install_zsh(){
     apt-get install zsh -y
     if ask "Do you want to install oh-my-zsh?" Y; then

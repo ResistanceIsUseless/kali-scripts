@@ -13,13 +13,15 @@ install_chrome(){
     apt-get install google-chrome-stable -y
 
     print_status "Patching Google Chrome to run as root.."
-    cp /usr/bin/google-chrome /usr/bin/google-chrome.old && sed -i 's/^\(exec.*\)$/\1 --user-data-dir/' /usr/bin/google-chrome
+    cp /usr/bin/chrome /usr/bin/chrome.old && sed -i 's/^\(exec.*\)$/\1 --user-data-dir/' /usr/bin/chrome
 }
 
 install_chromium(){
     apt-get install -y chromium
-    echo "# simply override settings above" >> /etc/chromium/default
-    echo 'CHROMIUM_FLAGS="--password-store=detect --user-data-dir"' >> /etc/chromium/default
+#   echo "# simply override settings above" >> /etc/chromium.d/default-flags
+    echo "# Adding the following so Chrome will run as root
+    echo 'CHROMIUM_FLAGS="--password-store=detect --user-data-dir"' >> /etc/chromium.d/default-flags
+    echo 'CHROMIUM_FLAGS="--password-store=detect --no-sandbox"' >> /etc/chromium.d/default-flags
 }
 
 install_firefox(){
